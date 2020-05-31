@@ -1,0 +1,117 @@
+#include "Menu.h"
+
+void menuPrincipal(){
+    char nomeArq[20], textoString[30], *split;
+    int cont=0, valoresMatriz[3], aux=0, j =0, opcao, flag, **matrizCaminhos, **visitado, *linhaInicial, *colunaInicial;
+    long int tamanhoString;
+    FILE *pontArq;
+
+    printf("PROGRAMA LABIRINTO: Opcoes do programa:\n1) Carregar novo arquivo de dados.\n2) Processar e exibir resposta.\n3) Sair\n");
+    scanf("%d", &opcao);
+    fflush(stdin);
+    switch(opcao){
+        case 1:
+            printf("Entre com o caminho do arquivo: \n");
+            scanf("%s", &nomeArq);
+            fflush(stdin);
+            pontArq = fopen(nomeArq, "r");
+
+            if (pontArq == NULL){
+                printf("FALHA AO ABRIR O ARQUIVO!\n");
+                menuPrincipal();
+            }
+            while(fgets(textoString, 30, pontArq) != NULL){
+                if (cont == 0){
+                    tamanhoString = strlen(textoString) + 1;
+                    split = strtok(textoString, " ");
+                    while (split != NULL){
+                        valoresMatriz[aux] = atoi(split);
+                        split = strtok (NULL, " ");
+                        aux++;
+                    }
+                }
+                cont++;
+            }
+            matrizCaminhos = alocarMatriz(valoresMatriz[0], valoresMatriz[1]);
+            visitado = alocarMatriz(valoresMatriz[0], valoresMatriz[1]);
+            fseek(pontArq, tamanhoString, SEEK_SET );
+            j = 0;
+            while(fgets(textoString, 30, pontArq) != NULL){
+                for (int i = 0; i < valoresMatriz[0]; i++){
+                    matrizCaminhos[j][i] = textoString[i] - '0';
+                    if (matrizCaminhos[j][i] == 1 || matrizCaminhos[j][i] == 0){
+                        visitado[j][i] = 0;
+                    } else {
+                        visitado[j][i] = 2;
+                    }
+                    if(matrizCaminhos[j][i] == 0){
+                        linhaInicial = j;
+                        colunaInicial = i;
+                    }
+                    printf("%d ", matrizCaminhos[j][i]);
+                }
+                printf("\n");
+                j++;
+            }
+            flag = 1;
+            menuPrincipal();
+            break;
+        case 2:
+            if ((*flag)==1){
+                if(movimentaEstudante(valoresMatriz[0], valoresMatriz[1], matrizCaminhos, visitado, &linhaInicial, &colunaInicial)){
+                    printf("DEU CERTO!\n");
+                } else {
+                    printf("NAO DEU!\n");
+                }
+                imprimeMatriz(valoresMatriz[0], valoresMatriz[1], visitado);
+
+            } else {
+                printf("Entre com o arquivo primeiro.\n");
+                menuPrincipal();
+            }
+            break;
+        default:
+            return;
+            break;
+    }
+
+    fclose(pontArq);
+    liberarMatriz(valoresMatriz[0], valoresMatriz[1], matrizCaminhos);
+    liberarMatriz(valoresMatriz[0], valoresMatriz[1], visitado);
+}
+
+int **alocarMatriz (int m, int n){
+    int **v;  /* ponteiro para a matriz */
+    int   i;    /* variavel auxiliar      */
+    if (m < 1 || n < 1) { /* verifica parametros recebidos */
+        printf ("** Erro: Parametro invalido **\n");
+        return (NULL);
+    }
+  /* aloca as linhas da matriz */
+    v = (int **) calloc (m, sizeof(int *));
+    if (v == NULL) {
+        printf ("** Erro: Memoria Insuficiente **");
+        return (NULL);
+    }
+  /* aloca as colunas da matriz */
+    for ( i = 0; i < m; i++ ) {
+        v[i] = (int*) calloc (n, sizeof(int));
+        if (v[i] == NULL) {
+        printf ("** Erro: Memoria Insuficiente **");
+        return (NULL);
+        }
+    }
+    return (v); /* retorna o ponteiro para a matriz */
+}
+
+int **liberarMatriz (int m, int n, int **v){
+    int  i;  /* variavel auxiliar */
+    if (v == NULL) return (NULL);
+    if (m < 1 || n < 1) {  /* verifica parametros recebidos */
+        printf ("** Erro: Parametro invalido **\n");
+        return (v);
+    }
+    for (i=0; i<m; i++) free (v[i]); /* libera as linhas da matriz */
+    free (v);      /* libera a matriz */
+    return (NULL); /* retorna um ponteiro nulo */
+}

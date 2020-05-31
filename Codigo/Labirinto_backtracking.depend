@@ -1,0 +1,25 @@
+# depslib dependency file v1.0
+1571426545 source:c:\users\andré elias\desktop\labirinto_backtracking\funcoes.c
+	"funcoes.h"
+
+1571375479 source:c:\users\andré elias\desktop\labirinto_backtracking\main.c
+	"funcoes.h"
+
+1571109897 source:c:\users\andré elias\desktop\labirinto_backtracking\arvore.c
+	"Arvore.h"
+
+1571110175 c:\users\andré elias\desktop\labirinto_backtracking\arvore.h
+
+1571425263 c:\users\andré elias\desktop\labirinto_backtracking\funcoes.h
+	"Menu.h"
+
+1571281994 c:\users\andré elias\desktop\labirinto_backtracking\menu.h
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	<stdbool.h>
+	<time.h>
+
+1571427107 source:c:\users\andré elias\desktop\labirinto_backtracking\menu.c
+	"Menu.h"
+
